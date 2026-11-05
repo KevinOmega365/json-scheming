@@ -1,3 +1,6 @@
+# Don't commit data!
+/data
+
 # Logs
 logs
 *.log
