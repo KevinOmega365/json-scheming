@@ -35,7 +35,7 @@ const endpointConfigData = zip_data_fields(unzippedData)
     .map(o => ({
         System: o.QuerySystem,
         Name: o.QueryName,
-        EndpointConfig: o.EndpointConfig
+        EndpointConfig: JSON.parse(o.EndpointConfig)
     }))
 
 console.log(endpointConfigData) // debug

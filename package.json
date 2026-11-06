@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "ajv": "^8.20.0",
+    "fluent-json-schema": "^6.0.2",
     "json-schema-generator": "^2.0.6",
     "sanitize-filename": "^1.6.4"
   },

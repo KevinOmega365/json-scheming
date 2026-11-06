@@ -36,7 +36,7 @@ for (let i = 0; i < schemaList.length; i++) {
     sting_match_output += '\n'
 }
 
-// console.log(sting_match_output)
+console.log(sting_match_output)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -51,4 +51,4 @@ for (let i = 0; i < schemaList.length; i++) {
     validation_output += '\n'
 }
 
-console.log(validation_output)
+// console.log(validation_output)

@@ -1,0 +1,77 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "$id": "api_file_request",
+    "title": "API File Request",
+    "description": "REST API File Downloader Config Schema",
+    "properties": {
+        "QueryUri": {
+            "type": "string"
+        },
+        "DataRootPath": {
+            "type": "string"
+        },
+        "QueryHeaderAttributes": {
+            "type": "object"
+        },
+        "AuthenticationHandlerConfig": {
+            "oneOf": [
+                {
+                    "type": "object",
+                    "$id": "#BasicAuthenticator",
+                    "properties": {
+                        "Type": {
+                            "type": "string",
+                            "const": "Integrations.Interface.RestAPI.AuthenticationHandlers.BasicAuthenticator"
+                        },
+                        "Parameters": {
+                            "type": "object",
+                            "properties": {
+                                "username": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "username",
+                                "password"
+                            ]
+                        }
+                    },
+                    "required": [
+                        "Type",
+                        "Parameters"
+                    ]
+                }
+            ]
+        },
+        "PagingHandlerConfig": {
+            "type": "object",
+            "properties": {
+                "Type": {
+                    "type": "string",
+                    "const": "NoPaging.DefaultPagingHandler"
+                }
+            },
+            "required": [
+                "Type"
+            ]
+        },
+        "MAX_QUERY_RETRIES": {
+            "type": "integer"
+        },
+        "MAX_QUERY_DELAY": {
+            "type": "integer"
+        },
+        "QUERY_TIMEOUT": {
+            "type": "integer"
+        }
+    },
+    "required": [
+        "QueryUri",
+        "DataRootPath",
+        "QueryHeaderAttributes"
+    ]
+}
