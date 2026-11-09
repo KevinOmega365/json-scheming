@@ -38,7 +38,7 @@ const endpointConfigData = zip_data_fields(unzippedData)
         EndpointConfig: JSON.parse(o.EndpointConfig)
     }))
 
-console.log(endpointConfigData) // debug
+// console.log(endpointConfigData) // debug
 
 readyEmptyFolder(configsFolderPath)
 writeConfigFiles(configsFolderPath, endpointConfigData)
