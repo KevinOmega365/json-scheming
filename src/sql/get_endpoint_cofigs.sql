@@ -14,5 +14,6 @@ from
         on json_value(T.StepConfig, '$.QueryName') = E.Name
         and json_value(T.StepConfig, '$.QuerySystem') = E.System
 where
-    G.Inactive = 0
+    T.StepType like 'API / Query request' -- 'API / File request'
+    and G.Inactive = 0
     and T.Inactive = 0

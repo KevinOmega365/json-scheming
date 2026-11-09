@@ -1,0 +1,187 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "$id": "api_rest_request",
+    "title": "API REST Request",
+    "description": "REST API Data Query Config Schema",
+    "properties": {
+        "AuthenticationHandlerConfig": {
+            "oneOf": [
+                {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "$id": "#BasicAuthenticator",
+                    "properties": {
+                        "Type": {
+                            "type": "string",
+                            "const": "Integrations.Interface.RestAPI.AuthenticationHandlers.BasicAuthenticator"
+                        },
+                        "Parameters": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                                "username": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "username",
+                                "password"
+                            ]
+                        }
+                    },
+                    "required": [
+                        "Type",
+                        "Parameters"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "$id": "#OAUTH2ClientCredentialsAuthenticator",
+                    "properties": {
+                        "Type": {
+                            "type": "string",
+                            "const": "Integrations.Interface.RestAPI.AuthenticationHandlers.OAUTH2ClientCredentialsAuthenticator"
+                        },
+                        "TokenUri": {
+                            "type": "string"
+                        },
+                        "TokenRequestTimeout": {
+                            "type": "integer"
+                        },
+                        "TokenRequestParameters": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                                "grant_type": {
+                                    "type": "string"
+                                },
+                                "Client_ID": {
+                                    "type": "string"
+                                },
+                                "Client_Secret": {
+                                    "type": "string"
+                                },
+                                "scope": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "grant_type",
+                                "Client_ID",
+                                "Client_Secret"
+                            ]
+                        }
+                    },
+                    "required": [
+                        "Type",
+                        "TokenUri",
+                        "TokenRequestTimeout",
+                        "TokenRequestParameters"
+                    ]
+                }
+            ]
+        },
+        "DataRootPath": {
+            "type": "string"
+        },
+        "DUMP_RESPONSE": {
+            "type": "boolean"
+        },
+        "HTTPRequestMethod": {
+            "type": "string",
+            "const": "GET"
+        },
+        "MAX_QUERY_DELAY": {
+            "type": "integer"
+        },
+        "MAX_QUERY_RETRIES": {
+            "type": "integer"
+        },
+        "PagingHandlerConfig": {
+            "oneOf": [
+                {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "$id": "#NoPagingHandler",
+                    "properties": {
+                        "OldType": {
+                            "type": "string"
+                        },
+                        "Type": {
+                            "type": "string",
+                            "const": "NoPaging.DefaultPagingHandler"
+                        }
+                    },
+                    "required": [
+                        "Type"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "$id": "#IncrementUrlPagingHandler",
+                    "properties": {
+                        "OldType": {
+                            "type": "string"
+                        },
+                        "TargetVariable": {
+                            "type": "string"
+                        },
+                        "Type": {
+                            "type": "string",
+                            "const": "IncrementUrl.DefaultPagingHandler"
+                        },
+                        "ValueIncrement": {
+                            "type": "integer"
+                        },
+                        "ValueInitial": {
+                            "type": "integer"
+                        }
+                    },
+                    "required": [
+                        "TargetVariable",
+                        "Type"
+                    ]
+                }
+            ]
+        },
+        "QUERY_TIMEOUT": {
+            "type": "integer"
+        },
+        "QueryHeaderAttributes": {
+            "type": "object",
+            "additionalProperties": false
+        },
+        "QueryUri": {
+            "type": "string"
+        },
+        "QueryUriModifierProc": {
+            "type": "string"
+        },
+        "RemoteMode": {
+            "type": "string",
+            "const": "REST"
+        },
+        "StoreMode": {
+            "type": "string",
+            "const": "RAW_JSON"
+        },
+        "xxQueryUri": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "DataRootPath",
+        "HTTPRequestMethod",
+        "QueryHeaderAttributes",
+        "QueryUri",
+        "RemoteMode",
+        "StoreMode"
+    ]
+}

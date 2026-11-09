@@ -118,6 +118,18 @@ const delegatedUrlFileHandler = S.object()
             .required()
     )
 
+/////////////////////////////////////////////////////// paging handler types //
+
+const noPagingHandler = S.object()
+        .additionalProperties(ALLOW_UNUSED_PROPERTIES)
+        .id('#NoPagingHandler')
+        .prop('OldType', S.string()) // todo: get rid of this
+        .prop('Type',
+            S.string()
+                .const('NoPaging.DefaultPagingHandler')
+                .required()
+        )
+
 ///////////////////////////////////////////////////////////////////// schema //
 
 const schema = S.object()
@@ -144,17 +156,7 @@ const schema = S.object()
 
     .prop(
         'PagingHandlerConfig',
-        S.object()
-
-            .additionalProperties(ALLOW_UNUSED_PROPERTIES)
-
-            .prop('OldType', S.string())
-
-            .prop('Type',
-                S.string()
-                    .const('NoPaging.DefaultPagingHandler')
-                    .required()
-            )
+        S.oneOf([noPagingHandler])
     )
 
     .prop('QUERY_TIMEOUT', S.integer())
