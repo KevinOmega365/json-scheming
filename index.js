@@ -5,8 +5,6 @@ import {
     readyEmptyFolder,
     writeConfigFiles
 } from "./src/js/generate_config_files.js"
-// import Ajv from "ajv";
-import jsonSchemaGenerator from 'json-schema-generator'
 import { zip_data_fields } from './src/js/zip_data_fields_json.js'
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -15,7 +13,6 @@ const inputFolderPath = './data/input/'
 const inputFileName = 'endpoint_configs.json'
 const inputFilePath = `${inputFolderPath}${inputFileName}`
 const configsFolderPath = './data/working/endpoint_configs/'
-const schemaFolderPath = './data/working/endpoint_schema/'
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -45,22 +42,6 @@ writeConfigFiles(configsFolderPath, endpointConfigData)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-const endpointSchemaData = endpointConfigData
-    .map(({
-        System,
-        Name,
-        EndpointConfig
-    }) => {
-        const generatedSchema = jsonSchemaGenerator(EndpointConfig)
-        delete generatedSchema['$schema']
-        return {
-            System,
-            Name,
-            EndpointConfig: generatedSchema
-        }
-    })
 
-readyEmptyFolder(schemaFolderPath)
-writeConfigFiles(schemaFolderPath, endpointSchemaData)
 
 ///////////////////////////////////////////////////////////////////////////////
