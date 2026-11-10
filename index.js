@@ -17,8 +17,8 @@ const configsFolderPath = './data/working/endpoint_configs/'
 ///////////////////////////////////////////////////////////////////////////////
 
 if(!existsSync(inputFilePath)) {
-    console.log(console.log(`Unable to find input file: ${inputFilePath}`))
-    console.log(process.exit(1))
+    console.log(`Unable to find input file: ${inputFilePath}`)
+    process.exit(1)
 }
 
 ///////////////////////////////////////////////////////////////////////////////

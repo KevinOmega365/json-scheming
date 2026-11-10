@@ -1,30 +1,32 @@
 ///////////////////////////////////////////////////////////////////// import //
 
-import Ajv from 'ajv'
 import S from 'fluent-json-schema'
-import fs from 'fs'
 
 //////////////////////////////////////////////////// allow unused properties //
 
 const ALLOW_UNUSED_PROPERTIES = false
 
-//////////////////////////////////////////////////////////////// test config //
+/////////////////////////////////////////////////////////////// Remote modes //
 
-const config = JSON.parse(
-    fs.readFileSync(
-        // './data/working/endpoint_configs/DTS - AIBEL-Timerecords.json'
-        // './data/working/endpoint_configs/DTS Classlibrary Tags - AibelIO - Yggdrasil-Classlibrary Tags.json'
-        // './data/working/endpoint_configs/DTS Classlibrary Tags - YGGDRASIL-Classlibrary Tags.json'
-        // './data/working/endpoint_configs/DTS MaterialStockItems-Material Stock Items.json'
-        // './data/working/endpoint_configs/DTS Planning Data-Plan Activities Relations.json'
-        // './data/working/endpoint_configs/DTS Planning Data-Plan Activities.json'
-        // './data/working/endpoint_configs/DTS SIF-SIF TagX.json'
-        // './data/working/endpoint_configs/DTS SIF-SIF.json'
-        // './data/working/endpoint_configs/DTS Yggdrasil+Munin-TagDocX.json'
-        './data/working/endpoint_configs/EdvardGrieg-Apply DTS - DCS-Documents.json'
-    )
-)
-// console.log(config)
+const remoteModes = {
+    REST: 'REST',
+    ODATA: 'ODATA',
+    GRAPHQL: 'GRAPHQL'
+}
+
+//////////////////////////////////////////////////////////////// Store modes //
+
+const storeModes = {
+    RAW_JSON: 'RAW_JSON',
+    TABULAR: 'TABULAR'
+}
+
+/////////////////////////////////////////////////////// HTTP request methods //
+
+const httpRequestMethods = {
+    GET: 'GET',
+    POST: 'POST'
+}
 
 //////////////////////////////////////////////////////// authenticator types //
 
@@ -42,6 +44,15 @@ const basicAuthenticator = S.object()
             .required()
             .prop('username', S.string().required())
             .prop('password', S.string().required())
+    )
+
+const noAuthAuthenticator = S.object()
+    .additionalProperties(ALLOW_UNUSED_PROPERTIES)
+    .id('#NoAuthAuthenticator')
+    .prop('Type',
+        S.string()
+            .const('Integrations.Interface.RestAPI.AuthenticationHandlers.NoAuthAuthenticator')
+            .required()
     )
 
 const oauth2ClientCredentialsAuthenticator = S.object()
@@ -66,19 +77,32 @@ const oauth2ClientCredentialsAuthenticator = S.object()
 
 /////////////////////////////////////////////////////// paging handler types //
 
-const noPagingHandler = S.object()
+const cursorContentJsonPagingHandler = S.object()
     .additionalProperties(ALLOW_UNUSED_PROPERTIES)
-    .id('#NoPagingHandler')
+    .id('#CursorContent.JsonPagingHandler')
     .prop('OldType', S.string()) // todo: get rid of this
     .prop('Type',
         S.string()
-            .const('NoPaging.DefaultPagingHandler')
+            .const('CursorContent.JsonPagingHandler')
             .required()
     )
+    .prop('CursorValuePath', S.string().required())
+    .prop('NextCursorValuePath', S.string().required())
 
-const incrementUrlPagingHandler = S.object()
+const cursorUrlNextLinkPagingHandler = S.object()
     .additionalProperties(ALLOW_UNUSED_PROPERTIES)
-    .id('#IncrementUrlPagingHandler')
+    .id('#CursorUrl.NextLinkPagingHandler')
+    .prop('OldType', S.string()) // todo: get rid of this
+    .prop('Type',
+        S.string()
+            .const('CursorUrl.NextLinkPagingHandler')
+            .required()
+    )
+    .prop('NextLinkPath', S.string().required())
+
+const incrementUrlDefaultPagingHandler = S.object()
+    .additionalProperties(ALLOW_UNUSED_PROPERTIES)
+    .id('#IncrementUrl.DefaultPagingHandler')
     .prop('OldType', S.string()) // todo: get rid of this
     .prop('TargetVariable', S.string().required())
     .prop('Type', S.string()
@@ -88,69 +112,73 @@ const incrementUrlPagingHandler = S.object()
     .prop('ValueIncrement', S.integer())
     .prop('ValueInitial', S.integer())
 
+const noPagingDefaultPagingHandler = S.object()
+    .additionalProperties(ALLOW_UNUSED_PROPERTIES)
+    .id('#NoPaging.DefaultPagingHandler')
+    .prop('OldType', S.string()) // todo: get rid of this
+    .prop('Type',
+        S.string()
+            .const('NoPaging.DefaultPagingHandler')
+            .required()
+    )
+
 ///////////////////////////////////////////////////////////////////// schema //
 
-const schema = S.object()
+export const getRestRequestSchema = () => {
 
-    .additionalProperties(ALLOW_UNUSED_PROPERTIES)
+    const schema = S.object()
 
-    .id('api_rest_request')
-    .title('API REST Request')
-    .description('REST API Data Query Config Schema')
-
-    .prop(
-        'AuthenticationHandlerConfig',
-        S.oneOf([basicAuthenticator, oauth2ClientCredentialsAuthenticator])
-    )
-
-    .prop('DataRootPath', S.string().required())
-
-    .prop('DUMP_RESPONSE', S.boolean())
-
-    .prop('HTTPRequestMethod', S.string().const('GET').required())
-
-    .prop('MAX_QUERY_DELAY', S.integer())
-
-    .prop('MAX_QUERY_RETRIES', S.integer())
-
-    .prop(
-        'PagingHandlerConfig',
-        S.oneOf([noPagingHandler, incrementUrlPagingHandler])
-    )
-
-    .prop('QUERY_TIMEOUT', S.integer())
-
-    .prop('QueryHeaderAttributes', S.object()
         .additionalProperties(ALLOW_UNUSED_PROPERTIES)
-        .required()
-    ) // todo: add some details
+        .id('api_rest_request')
+        .title('API REST Request')
+        .description('REST API Data Query Config Schema')
+        .prop(
+            'AuthenticationHandlerConfig',
+            S.oneOf([
+                basicAuthenticator,
+                noAuthAuthenticator,
+                oauth2ClientCredentialsAuthenticator
+            ])
+        )
+        .prop('DataRootPath', S.string())
+        .prop('DUMP_RESPONSE', S.boolean())
+        .prop(
+            'HTTPRequestMethod',
+            S.string().enum(Object.values(httpRequestMethods)))
+        .prop('HTTPReequestMethod', S.string()) // todo: get rid of this
+        .prop('MAX_QUERY_DELAY', S.integer())
+        .prop('MAX_QUERY_RETRIES', S.integer())
+        .prop('MAX_RETRY_DELAY', S.integer())
+        .prop(
+            'PagingHandlerConfig',
+            S.oneOf([
+                cursorContentJsonPagingHandler,
+                cursorUrlNextLinkPagingHandler,
+                incrementUrlDefaultPagingHandler,
+                noPagingDefaultPagingHandler
+            ])
+        )
+        .prop('QUERY_TIMEOUT', S.integer())
+        .prop('QueryHeaderAttributes',
+            S.object()
+                .additionalProperties(S.string()) // free string mapping
+        )
+        .prop('QueryUri', S.string().required())
+        .prop('QueryUriModifierProc', S.string())
+        .prop(
+            'RemoteMode',
+            S.string().enum(Object.values(remoteModes))
+        )
+        .prop(
+            'StoreMode',
+            S.string().enum(Object.values(storeModes)).required()
+        )
+        .prop('xxAuthenticationHandlerConfig', S.object()) // todo: get rid of this
+        .prop('xxPagingHandlerConfig', S.object()) // todo: get rid of this
+        .prop('xxQueryUri', S.string()) // todo: get rid of this
+        .prop('xyzaa', S.string()) // todo: get rid of this
 
-    .prop('QueryUri', S.string().required())
-
-    .prop('QueryUriModifierProc', S.string())
-    
-    .prop('RemoteMode', S.string().const('REST').required())
-    
-    .prop('StoreMode', S.string().const('RAW_JSON').required())
-    
-    .prop('xxQueryUri', S.string()) // todo: get rid of this
-
-    .valueOf()
-
-fs.writeFileSync(
-    './api_rest_request_schema.json',
-    JSON.stringify(schema, null, 4)
-)
-
-/////////////////////////////////////////////////////////////////// validate //
-
-const ajv = new Ajv({ allErrors: true })
-const validate = ajv.compile(schema.valueOf())
-const valid = validate(config)
-
-///////////////////////////////////////////////////////////////////// report //
-
-console.log(valid || 'Nope')
-console.log(validate.errors ?? 'OK')
+    return schema
+}
 
 ///////////////////////////////////////////////////////////////////////////////
