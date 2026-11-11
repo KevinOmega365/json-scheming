@@ -4,6 +4,7 @@
 import Ajv from 'ajv'
 import fs from 'fs'
 import { getRestRequestSchema } from './src/js/api_rest_request_schema.js'
+import { getFileRequestSchema } from './src/js/api_file_request_schema.js'
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -15,7 +16,7 @@ const fileNames = fs.readdirSync(folderPath)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-const schema = getRestRequestSchema()
+const schema = getFileRequestSchema() // getRestRequestSchema()
 const ajv = new Ajv({ allErrors: true })
 const validate = ajv.compile(schema.valueOf())
 

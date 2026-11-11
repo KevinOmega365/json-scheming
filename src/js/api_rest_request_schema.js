@@ -89,6 +89,19 @@ const cursorContentJsonPagingHandler = S.object()
     .prop('CursorValuePath', S.string().required())
     .prop('NextCursorValuePath', S.string().required())
 
+const cursorUrlDBQueuePagingHandler = S.object()
+    .additionalProperties(ALLOW_UNUSED_PROPERTIES)
+    .id('#CursorUrl.DBQueuePagingHandler')
+    .prop('OldType', S.string()) // todo: get rid of this
+    .prop('Type',
+        S.string()
+            .const('CursorUrl.DBQueuePagingHandler')
+            .required()
+    )
+    .prop('ViewName', S.string().required())
+    .prop('ColumnName', S.string().required())
+    .prop('PostStoredProc', S.string())
+
 const cursorUrlNextLinkPagingHandler = S.object()
     .additionalProperties(ALLOW_UNUSED_PROPERTIES)
     .id('#CursorUrl.NextLinkPagingHandler')
@@ -153,6 +166,7 @@ export const getRestRequestSchema = () => {
             'PagingHandlerConfig',
             S.oneOf([
                 cursorContentJsonPagingHandler,
+                cursorUrlDBQueuePagingHandler,
                 cursorUrlNextLinkPagingHandler,
                 incrementUrlDefaultPagingHandler,
                 noPagingDefaultPagingHandler
@@ -165,6 +179,7 @@ export const getRestRequestSchema = () => {
         )
         .prop('QueryUri', S.string().required())
         .prop('QueryUriModifierProc', S.string())
+        .prop('RegexErrorPattern', S.string())
         .prop(
             'RemoteMode',
             S.string().enum(Object.values(remoteModes))
@@ -173,6 +188,8 @@ export const getRestRequestSchema = () => {
             'StoreMode',
             S.string().enum(Object.values(storeModes)).required()
         )
+        .prop('SECRET_EXPIRATION', S.string())
+        .prop('xStoreMode', S.string()) // todo: get rid of this
         .prop('xxAuthenticationHandlerConfig', S.object()) // todo: get rid of this
         .prop('xxPagingHandlerConfig', S.object()) // todo: get rid of this
         .prop('xxQueryUri', S.string()) // todo: get rid of this

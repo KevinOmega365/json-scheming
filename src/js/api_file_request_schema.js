@@ -1,27 +1,10 @@
 ///////////////////////////////////////////////////////////////////// import //
 
-import Ajv from 'ajv'
 import S from 'fluent-json-schema'
-import fs from 'fs'
 
 //////////////////////////////////////////////////// allow unused properties //
 
 const ALLOW_UNUSED_PROPERTIES = false
-
-//////////////////////////////////////////////////////////////// test config //
-
-const config = JSON.parse(
-    fs.readFileSync(
-        // './data/working/endpoint_configs/AkerCDF D2 BMS-Download Files.json'
-        // './data/working/endpoint_configs/Apply ProArcProxy-Download Files.json'
-        // './data/working/endpoint_configs/EdvardGrieg-Apply DTS - DCS-Download Files.json'
-        // './data/working/endpoint_configs/IvarAasen DTS - DCS-Download Files.json'
-        // './data/working/endpoint_configs/Munin DTS - DCS-Download Files.json'
-        // './data/working/endpoint_configs/Valhall DTS - DCS-Download Files.json'
-        './data/working/endpoint_configs/Yggdrasil DTS - DCS-Download Files.json'
-    )
-)
-// console.log(config)
 
 //////////////////////////////////////////////////////// authenticator types //
 
@@ -62,7 +45,6 @@ const oauth2ClientCredentialsAuthenticator = S.object()
     )
 
 ///////////////////////////////////////////////////////// file handler types //
-
 
 const directUrlFileHandler = S.object()
     .additionalProperties(ALLOW_UNUSED_PROPERTIES)
@@ -132,6 +114,8 @@ const noPagingHandler = S.object()
 
 ///////////////////////////////////////////////////////////////////// schema //
 
+export const getFileRequestSchema = () => {
+
 const schema = S.object()
 
     .additionalProperties(ALLOW_UNUSED_PROPERTIES)
@@ -163,22 +147,7 @@ const schema = S.object()
 
     .prop('QueryUri', S.string().required())
 
-    .valueOf()
-
-fs.writeFileSync(
-    './api_file_request_schema.json',
-    JSON.stringify(schema, null, 4)
-)
-
-/////////////////////////////////////////////////////////////////// validate //
-
-const ajv = new Ajv({ allErrors: true })
-const validate = ajv.compile(schema.valueOf())
-const valid = validate(config)
-
-///////////////////////////////////////////////////////////////////// report //
-
-console.log(valid || 'Nope')
-console.log(validate.errors ?? 'OK')
+    return schema
+}
 
 ///////////////////////////////////////////////////////////////////////////////
