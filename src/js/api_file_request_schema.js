@@ -14,6 +14,7 @@ const basicAuthenticator = S.object()
     .prop('Type',
         S.string()
             .const('Integrations.Interface.RestAPI.AuthenticationHandlers.BasicAuthenticator')
+            .default('Integrations.Interface.RestAPI.AuthenticationHandlers.BasicAuthenticator')
             .required()
     )
     .prop('Parameters',
@@ -30,6 +31,7 @@ const oauth2ClientCredentialsAuthenticator = S.object()
     .prop('Type',
         S.string()
             .const('Integrations.Interface.RestAPI.AuthenticationHandlers.OAUTH2ClientCredentialsAuthenticator')
+            .default('Integrations.Interface.RestAPI.AuthenticationHandlers.OAUTH2ClientCredentialsAuthenticator')
             .required()
     )
     .prop('TokenUri', S.string().required())
@@ -67,6 +69,7 @@ const directUrlFileHandler = S.object()
     .prop('Type',
         S.string()
             .const('Integrations.Interface.RestAPI.FileHandlers.DirectUrlFileHandler')
+            .default('Integrations.Interface.RestAPI.FileHandlers.DirectUrlFileHandler')
             .required()
     )
 
@@ -97,6 +100,7 @@ const delegatedUrlFileHandler = S.object()
     .prop('Type',
         S.string()
             .const('Integrations.Interface.RestAPI.FileHandlers.DelegatedUrlFileHandler')
+            .default('Integrations.Interface.RestAPI.FileHandlers.DelegatedUrlFileHandler')
             .required()
     )
 
@@ -109,6 +113,7 @@ const noPagingHandler = S.object()
         .prop('Type',
             S.string()
                 .const('NoPaging.DefaultPagingHandler')
+                .default('NoPaging.DefaultPagingHandler')
                 .required()
         )
 

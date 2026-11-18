@@ -92,8 +92,8 @@ if (!fs.existsSync(schemaFolderPath)) {
     fs.mkdirSync(schemaFolderPath, { recursive: true })
 }
 
-fs.writeFileSync(fileSchemaFilePath, JSON.stringify(restRequestSchema, null, 4))
-fs.writeFileSync(restSchemaFilePath, JSON.stringify(fileRequestSchema, null, 4))
+fs.writeFileSync(fileSchemaFilePath, JSON.stringify(fileRequestSchema, null, 4))
+fs.writeFileSync(restSchemaFilePath, JSON.stringify(restRequestSchema, null, 4))
 
 ///////////////////////////////////////////////////////// prepare validators //
 
