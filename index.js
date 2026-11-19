@@ -2,9 +2,9 @@
 
 import Ajv from 'ajv'
 import fs from 'fs'
-import { getFileRequestSchema } from './src/js/api_file_request_schema.js'
-import { getRestRequestSchema } from './src/js/api_rest_request_schema.js'
-import { zip_data_fields } from './src/js/zip_data_fields_json.js'
+import { getFileRequestSchema } from './src/js/schema/api_file_request_schema.js'
+import { getRestRequestSchema } from './src/js/schema/api_rest_request_schema.js'
+import { zip_data_fields } from './src/js/util/zip_data_fields_json.js'
 
 /////////////////////////////////////////////////////////////// path strings //
 

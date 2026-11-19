@@ -1,6 +1,13 @@
 ///////////////////////////////////////////////////////////////////// import //
 
 import S from 'fluent-json-schema'
+import {
+    cursorContentJsonPagingHandler,
+    cursorUrlDBQueuePagingHandler,
+    cursorUrlNextLinkPagingHandler,
+    incrementUrlDefaultPagingHandler,
+    noPagingDefaultPagingHandler,
+} from './paging/paging_handler_types.js'
 
 //////////////////////////////////////////////////// allow unused properties //
 
